@@ -1,20 +1,60 @@
-import { ModCallback } from "isaac-typescript-definitions";
+import {
+  CollectibleType,
+  LevelStage,
+  RoomType,
+  StageType,
+} from "isaac-typescript-definitions";
+import {
+  ModCallbackCustom,
+  game,
+  getRoomDescriptorsForType,
+  goToStage,
+  log,
+  onSetSeed,
+} from "isaacscript-common";
+import { mod } from "./mod";
 
-const MOD_NAME = "isaac-room-finder";
+const STAGE_TO_LOOK_IN = LevelStage.CAVES_1;
+const STAGE_TYPE_TO_LOOK_IN = StageType.REPENTANCE;
+const ROOM_TYPE_TO_LOOK_FOR = RoomType.TREASURE;
+const ROOM_VARIANT_TO_LOOK_FOR = 2;
 
-// This function is run when your mod first initializes.
 export function main(): void {
-  // Instantiate a new mod object, which grants the ability to add callback functions that
-  // correspond to in-game events.
-  const mod = RegisterMod(MOD_NAME, 1);
-
-  // Register a callback function that corresponds to when a new player is initialized.
-  mod.AddCallback(ModCallback.POST_PLAYER_INIT, postPlayerInit);
-
-  // Print a message to the "log.txt" file.
-  Isaac.DebugString(`${MOD_NAME} initialized.`);
+  mod.AddCallbackCustom(
+    ModCallbackCustom.POST_GAME_STARTED_REORDERED,
+    postGameStartedReorderedFalse,
+    false,
+  );
 }
 
-function postPlayerInit() {
-  Isaac.DebugString("Callback fired: POST_PLAYER_INIT");
+// ModCallbackCustom.POST_GAME_STARTED_REORDERED
+function postGameStartedReorderedFalse() {
+  if (onSetSeed()) {
+    return;
+  }
+
+  const seeds = game.GetSeeds();
+  const startSeedString = seeds.GetStartSeedString();
+  log(`POST_GAME_STARTED_REORDERED - ${startSeedString}`);
+
+  goToStage(STAGE_TO_LOOK_IN, STAGE_TYPE_TO_LOOK_IN);
+  const roomDescriptors = getRoomDescriptorsForType(ROOM_TYPE_TO_LOOK_FOR);
+
+  let found = false;
+  for (const roomDescriptor of roomDescriptors) {
+    if (
+      roomDescriptor.Data !== undefined &&
+      roomDescriptor.Data.Variant === ROOM_VARIANT_TO_LOOK_FOR
+    ) {
+      found = true;
+      log(`Found room: ${ROOM_TYPE_TO_LOOK_FOR}.${ROOM_VARIANT_TO_LOOK_FOR}`);
+    }
+  }
+
+  if (found) {
+    const player = Isaac.GetPlayer();
+    player.AddCollectible(CollectibleType.MIND);
+  } else {
+    mod.restartNextRenderFrame();
+  }
 }
