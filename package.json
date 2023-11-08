@@ -1,0 +1,37 @@
+{
+  "name": "isaac-room-finder",
+  "version": "0.0.0",
+  "description": "A mod for The Binding of Isaac: Repentance.",
+  "keywords": [
+    "isaac",
+    "mod",
+    "rebirth",
+    "afterbirth",
+    "repentance"
+  ],
+  "license": "GPL-3.0",
+  "type": "module",
+  "scripts": {
+    "build": "tstl",
+    "lint": "tsx ./scripts/lint.ts",
+    "nuke": "isaacscript nuke",
+    "publish": "isaacscript publish",
+    "start": "isaacscript monitor",
+    "update": "isaacscript update"
+  },
+  "dependencies": {
+    "isaac-typescript-definitions": "^38.0.0",
+    "isaacscript-common": "^76.0.0"
+  },
+  "devDependencies": {
+    "isaacscript": "^3.19.2",
+    "isaacscript-common-node": "^1.2.0",
+    "isaacscript-lint": "^6.3.0",
+    "isaacscript-spell": "^1.7.0",
+    "isaacscript-tsconfig": "^5.0.0",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2",
+    "typescript-to-lua": "^1.21.0"
+  },
+  "packageManager": "yarn@4.0.1"
+}
