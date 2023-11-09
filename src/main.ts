@@ -6,6 +6,7 @@ import {
 } from "isaac-typescript-definitions";
 import {
   ModCallbackCustom,
+  ReadonlySet,
   game,
   getRoomDescriptorsForType,
   goToStage,
@@ -14,10 +15,10 @@ import {
 } from "isaacscript-common";
 import { mod } from "./mod";
 
-const STAGE_TO_LOOK_IN = LevelStage.CAVES_1;
-const STAGE_TYPE_TO_LOOK_IN = StageType.REPENTANCE;
-const ROOM_TYPE_TO_LOOK_FOR = RoomType.TREASURE;
-const ROOM_VARIANT_TO_LOOK_FOR = 2;
+const STAGE_TO_LOOK_IN = LevelStage.WOMB_1;
+const STAGE_TYPE_TO_LOOK_IN = StageType.ORIGINAL;
+const ROOM_TYPE_TO_LOOK_FOR = RoomType.BOSS;
+const ROOM_VARIANTS_TO_LOOK_FOR = new ReadonlySet([4031, 4032, 4033]);
 
 export function main(): void {
   mod.AddCallbackCustom(
@@ -44,10 +45,12 @@ function postGameStartedReorderedFalse() {
   for (const roomDescriptor of roomDescriptors) {
     if (
       roomDescriptor.Data !== undefined &&
-      roomDescriptor.Data.Variant === ROOM_VARIANT_TO_LOOK_FOR
+      ROOM_VARIANTS_TO_LOOK_FOR.has(roomDescriptor.Data.Variant)
     ) {
       found = true;
-      log(`Found room: ${ROOM_TYPE_TO_LOOK_FOR}.${ROOM_VARIANT_TO_LOOK_FOR}`);
+      log(
+        `Found room: ${roomDescriptor.Data.Type}.${roomDescriptor.Data.Variant}`,
+      );
     }
   }
 
