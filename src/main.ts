@@ -9,9 +9,9 @@ import {
   ReadonlySet,
   game,
   getRoomDescriptorsForType,
-  goToStage,
   log,
   onSetSeed,
+  setStage,
 } from "isaacscript-common";
 import { mod } from "./mod";
 
@@ -38,7 +38,7 @@ function postGameStartedReorderedFalse() {
   const startSeedString = seeds.GetStartSeedString();
   log(`POST_GAME_STARTED_REORDERED - ${startSeedString}`);
 
-  goToStage(STAGE_TO_LOOK_IN, STAGE_TYPE_TO_LOOK_IN);
+  setStage(STAGE_TO_LOOK_IN, STAGE_TYPE_TO_LOOK_IN);
   const roomDescriptors = getRoomDescriptorsForType(ROOM_TYPE_TO_LOOK_FOR);
 
   let found = false;
